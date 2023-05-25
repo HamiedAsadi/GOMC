@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  "Classic":
+  "CircleCI for GOMC":
     docker:
       - image: "cimg/base:2022.03"
     steps:
@@ -30,13 +30,13 @@ jobs:
             gcc --version
             cmake --version
       - run:
-          name: Build Classic
+          name: Build CircleCI for GOMC
           command: |
-            mkdir ascemu_classic
-            cd ascemu_classic
+            mkdir CircleCI_GOMC
+            cd CircleCI_GOMC
             cmake ../ -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_WARNINGS=0 -DBUILD_TOOLS=0 -DUSE_PCH=1 -DASCEMU_VERSION=Classic
             cd ..
-            cd ascemu_classic
+            cd CircleCI_GOMC
             make -j 4
             cd ..
 
@@ -45,5 +45,5 @@ workflows:
   version: 2.1
   build:
     jobs:
-      - "Classic"
+      - "CircleCI for GOMC"
 
