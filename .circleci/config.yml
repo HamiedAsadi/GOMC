@@ -1,59 +1,206 @@
 version: 2.1
-executors: #(1)
-  exectr:
-    docker:
-      - image: dockerben/cpptemplate:latest #(2)
 
 jobs:
-  build:
-    executor: exectr #(1)
+  "Classic":
+    docker:
+      - image: "cimg/base:2022.03"
     steps:
       - checkout
       - run:
-          name: Install vcpkg dependencies
-          command: ./../../vcpkg/vcpkg install fmt doctest #(3)
+          name: Installing SUDO
+          command: 'sudo apt-get update && sudo apt-get install -y && sudo rm -rf /var/lib/apt/lists/*'
+#      - run:
+#          name: Installing GCC
+#          command: 'sudo apt-get update && sudo apt-get install -y gcc-9 g++'
       - run:
-          name: Create build directories
-          command: |
-            mkdir -p build
-            mv buildutils build/buildutils
+          name: Install CMAKE
+          command: 'sudo apt-get update && sudo apt-get install -y cmake'
       - run:
-          name: Setup cmake and build artifacts
+          name: Install deps
           command: |
-            cd build
-            cmake -DCMAKE_TOOLCHAIN_FILE=/vcpkg/scripts/buildsystems/vcpkg.cmake .. #(4)
-            cmake --build . --config Release #(5)
-      - persist_to_workspace: #(6)
-          root: .
-          paths: build
-
-  test:
-    executor: exectr #(1)
+            sudo apt-get update && sudo apt-get install -y zlib1g-dev
+            sudo apt-get update && sudo apt-get install -y libssl-dev
+            sudo apt-get update && sudo apt-get install -y libpcre3-dev
+            sudo apt-get update && sudo apt-get install -y libbz2-dev
+            sudo apt-get update && sudo apt-get install -y libmysqlclient-dev
+            sudo apt-get update && sudo apt-get install -y libmysql++-dev
+      - run:
+          name: Check versions
+          command: |
+            gcc --version
+            cmake --version
+      - run:
+          name: Build Classic
+          command: |
+            mkdir ascemu_classic
+            cd ascemu_classic
+            cmake ../ -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_WARNINGS=0 -DBUILD_TOOLS=0 -DUSE_PCH=1 -DASCEMU_VERSION=Classic
+            cd ..
+            cd ascemu_classic
+            make -j 4
+            cd ..
+  "TBC":
+    docker:
+      - image: "cimg/base:2022.03"
     steps:
-      - attach_workspace: #(7)
-          at: .
+      - checkout
       - run:
-          name: Create test directory
-          command: |
-            cd build
-            mkdir -p Test
+          name: Installing SUDO
+          command: 'sudo apt-get update && sudo apt-get install -y && sudo rm -rf /var/lib/apt/lists/*'
+#      - run:
+#          name: Installing GCC
+#          command: 'sudo apt-get update && sudo apt-get install -y gcc-9 g++'
       - run:
-          name: Execute Tests
-          command: |
-            cd build
-            ctest --no-compress-output -T Test || true #(8)
+          name: Install CMAKE
+          command: 'sudo apt-get update && sudo apt-get install -y cmake'
       - run:
-          name: Transform test results into JUnit conform notation
+          name: Install deps
           command: |
-            python3 build/buildutils/ctest2JUnit.py build build/buildutils/CTest2JUnit.xsl > build/Test/results.xml #(9)
-      - store_test_results: #(10)
-          path: build/Test
-
+            sudo apt-get update && sudo apt-get install -y zlib1g-dev
+            sudo apt-get update && sudo apt-get install -y libssl-dev
+            sudo apt-get update && sudo apt-get install -y libpcre3-dev
+            sudo apt-get update && sudo apt-get install -y libbz2-dev
+            sudo apt-get update && sudo apt-get install -y libmysqlclient-dev
+            sudo apt-get update && sudo apt-get install -y libmysql++-dev
+      - run:
+          name: Check versions
+          command: |
+            gcc --version
+            cmake --version
+      - run:
+          name: Build TBC
+          command: |
+            mkdir ascemu_bc
+            cd ascemu_bc
+            cmake ../ -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_WARNINGS=0 -DBUILD_TOOLS=0 -DUSE_PCH=1 -DASCEMU_VERSION=TBC
+            cd ..
+            cd ascemu_bc
+            make -j 4
+            cd ..
+            
+  "WotLK":
+    docker:
+      - image: "cimg/base:2022.03"
+    steps:
+      - checkout
+      - run:
+          name: Installing SUDO
+          command: 'sudo apt-get update && sudo apt-get install -y && sudo rm -rf /var/lib/apt/lists/*'
+#      - run:
+#          name: Installing GCC
+#          command: 'sudo apt-get update && sudo apt-get install -y gcc-9 g++'
+      - run:
+          name: Install CMAKE
+          command: 'sudo apt-get update && sudo apt-get install -y cmake'
+      - run:
+          name: Install deps
+          command: |
+            sudo apt-get update && sudo apt-get install -y zlib1g-dev
+            sudo apt-get update && sudo apt-get install -y libssl-dev
+            sudo apt-get update && sudo apt-get install -y libpcre3-dev
+            sudo apt-get update && sudo apt-get install -y libbz2-dev
+            sudo apt-get update && sudo apt-get install -y libmysqlclient-dev
+            sudo apt-get update && sudo apt-get install -y libmysql++-dev
+      - run:
+          name: Check versions
+          command: |
+            gcc --version
+            cmake --version
+      - run:
+          name: Build WotLK
+          command: |
+            mkdir ascemu_wotlk
+            cd ascemu_wotlk
+            cmake ../ -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_WARNINGS=0 -DBUILD_TOOLS=0 -DUSE_PCH=1 -DASCEMU_VERSION=WotLK
+            cd ..
+            cd ascemu_wotlk
+            make -j 4
+            cd ..
+            
+  "Cata":
+    docker:
+      - image: "cimg/base:2022.03"
+    steps:
+      - checkout
+      - run:
+          name: Installing SUDO
+          command: 'sudo apt-get update && sudo apt-get install -y && sudo rm -rf /var/lib/apt/lists/*'
+#      - run:
+#          name: Installing GCC
+#          command: 'sudo apt-get update && sudo apt-get install -y gcc-9 g++'
+      - run:
+          name: Install CMAKE
+          command: 'sudo apt-get update && sudo apt-get install -y cmake'
+      - run:
+          name: Install deps
+          command: |
+            sudo apt-get update && sudo apt-get install -y zlib1g-dev
+            sudo apt-get update && sudo apt-get install -y libssl-dev
+            sudo apt-get update && sudo apt-get install -y libpcre3-dev
+            sudo apt-get update && sudo apt-get install -y libbz2-dev
+            sudo apt-get update && sudo apt-get install -y libmysqlclient-dev
+            sudo apt-get update && sudo apt-get install -y libmysql++-dev
+      - run:
+          name: Check versions
+          command: |
+            gcc --version
+            cmake --version
+      - run:
+          name: Build Cata
+          command: |
+            mkdir ascemu_cata
+            cd ascemu_cata
+            cmake ../ -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_WARNINGS=0 -DBUILD_TOOLS=0 -DUSE_PCH=1 -DASCEMU_VERSION=Cata
+            cd ..
+            cd ascemu_cata
+            make -j 4
+            cd ..
+            
+  "Mop":
+    docker:
+      - image: "cimg/base:2022.03"
+    steps:
+      - checkout
+      - run:
+          name: Installing SUDO
+          command: 'sudo apt-get update && sudo apt-get install -y && sudo rm -rf /var/lib/apt/lists/*'
+#      - run:
+#          name: Installing GCC
+#          command: 'sudo apt-get update && sudo apt-get install -y gcc-9 g++'
+      - run:
+          name: Install CMAKE
+          command: 'sudo apt-get update && sudo apt-get install -y cmake'
+      - run:
+          name: Install deps
+          command: |
+            sudo apt-get update && sudo apt-get install -y zlib1g-dev
+            sudo apt-get update && sudo apt-get install -y libssl-dev
+            sudo apt-get update && sudo apt-get install -y libpcre3-dev
+            sudo apt-get update && sudo apt-get install -y libbz2-dev
+            sudo apt-get update && sudo apt-get install -y libmysqlclient-dev
+            sudo apt-get update && sudo apt-get install -y libmysql++-dev
+      - run:
+          name: Check versions
+          command: |
+            gcc --version
+            cmake --version
+      - run:
+          name: Build Mop
+          command: |
+            mkdir ascemu_mop
+            cd ascemu_mop
+            cmake ../ -DCMAKE_BUILD_TYPE=Release -DBUILD_WITH_WARNINGS=0 -DBUILD_TOOLS=0 -DUSE_PCH=1 -DASCEMU_VERSION=Mop
+            cd ..
+            cd ascemu_mop
+            make -j 4
+            cd ..
+            
 workflows:
-  version: 2
-  build-and-test:
+  version: 2.1
+  build:
     jobs:
-      - build #(11)
-      - test: #(12)
-          requires:
-            - build
+      - "Classic"
+      - "TBC"
+      - "WotLK"
+      - "Cata"
+      - "Mop"
