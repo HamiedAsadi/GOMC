@@ -1,5 +1,5 @@
 #EnsemblePreprocessor defines NVT = 1, GEMC = 2, GCMC = 3, NPT = 4
-const { add_NVT_test name, add_NPT_test name, add_GCMC_test name } = require("./GoogleTest");
+const { add_NVT_test name, add_NPT_test name, add_GCMC_test name, add_GEMC_test name } = require("./GoogleTest");
 function(add_NVT_test name)
       set(NVT_flags "-DENSEMBLE=1")
       # My test are all called name_test.cpp
