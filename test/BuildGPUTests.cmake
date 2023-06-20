@@ -1,5 +1,5 @@
 # Find CUDA is enabled, set it up
-
+const { add_GPU_NVT_test name, add_GPU_NPT_test name, add_GPU_GCMC_test name, add_GPU_GEMC_test } = require("./GoogleTest");
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 	message("-- Debug build type detected, passing : '-g -G --keep -lineinfo' to nvcc")
 	set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -g -G --keep -lineinfo")
